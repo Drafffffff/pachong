@@ -13,3 +13,10 @@ for single in total:
     text.write(gettext(str(a['href'])))
 text.close()
 
+
+
+
+
+
+
+
