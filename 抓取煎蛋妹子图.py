@@ -3,13 +3,13 @@ from bs4 import BeautifulSoup
 import time
 import os
 
-cur_page = 1
-picture = 0
+cur_page = 1250
+picture = 8662
 urls = [
-    'http://jandan.net/ooxx/page-{}'.format(str(i))for i in range(800, 2290)]
+    'http://jandan.net/ooxx/page-{}'.format(str(i))for i in range(cur_page, 2290)]
 
 
-def getImage(ads):
+def getImage(ads):  # 获取jpg
     global picture
     picture += 1
     '''print('Downloading...')
@@ -20,11 +20,28 @@ def getImage(ads):
     print ('Got ', len(imList), ' images')
     '''
     print('request img...')
-    print('request succeed!')
     try:
         ir = requests.get(ads)
+        print('request succeed!')
         path = os.path.dirname(__file__) + '/img/' + \
             str(picture) + '.jpg'  # 获取当前文件夹的绝对路
+        print(path)
+        print('Downloading ...')
+        open(path, 'wb').write(ir.content)
+        print('picture', picture, ' download succsed!')
+    except:
+        print('picture ', picture, ' download failed!')
+
+
+def getGif(ads):  # 获取gif
+    global picture
+    picture += 1
+    print('request gif...')
+    try:
+        ir = requests.get(ads)
+        print('request succeed!')
+        path = os.path.dirname(__file__) + '/img/' + \
+            str(picture) + '.gif'  # 获取当前文件夹的绝对路
         print(path)
         print('Downloading ...')
         open(path, 'wb').write(ir.content)
@@ -41,10 +58,14 @@ for url in urls:
     ImgUrl = soup.select('div.text > p > img')
     for i in ImgUrl:
         ads = str(i.get('src'))
+
         if ads.find('http:') == 0:
             pass
         else:
             ads = 'http:' + ads
         print(ads)
-        getImage(ads)
+        if ads[-4:] == '.gif':
+            getGif(ads)
+        elif ads[-4:] == '.jpg':
+            getImage(ads)
     cur_page += 1
